@@ -17,7 +17,6 @@ public class ScheduleService {
     @Transactional
     public CreateScheduleResponseDto save(CreateScheduleRequestDto request) {
         Schedule schedule = new Schedule(
-                request.getId(),
                 request.getAuthor(),
                 request.getTitle(),
                 request.getContents()
@@ -37,7 +36,7 @@ public class ScheduleService {
         List<Schedule> schedules;
 
         if (author != null) {
-            schedules = scheduleRepository.findAllByName(author);
+            schedules = scheduleRepository.findAllByAuthor(author);
         } else {
             schedules = scheduleRepository.findAll();
         }
@@ -67,4 +66,15 @@ public class ScheduleService {
 
         return UpdateScheduleResponseDto.from(schedule);
     }
+
+    @Transactional
+    public void deleteOne(Long scheduleId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
+                () -> new IllegalStateException("일정이 존재하지 않습니다.")
+        );
+
+        scheduleRepository.deleteById(scheduleId);
+    }
+
+
 }

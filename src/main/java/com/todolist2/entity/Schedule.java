@@ -24,8 +24,7 @@ public class Schedule extends BaseEntity{
 
     private String contents;
 
-    public Schedule(Long id, String author, String title, String contents) {
-        this.id = id;
+    public Schedule(String author, String title, String contents) {
         this.author = author;
         this.title = title;
         this.contents = contents;
