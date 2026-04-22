@@ -56,12 +56,33 @@ public class UserController {
     @PatchMapping("/{userId}")
     public ResponseEntity<UpdateUserResponseDto> update(
             @RequestBody UpdateUserRequestDto request,
-            @PathVariable Long userId){
+            @PathVariable Long userId,
+            HttpSession session
+    ){
+        LoginResponseDto loginUser = (LoginResponseDto) session.getAttribute("loginUser");
+        if(loginUser == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if(!loginUser.getId().equals(userId)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(userService.updateOne(request,userId));
     }
 
-    @DeleteMapping("{userId}")
-    public ResponseEntity<Void> delete(@PathVariable Long userId){
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> delete(
+            @PathVariable Long userId,
+            HttpSession session
+    ){
+        LoginResponseDto loginUser = (LoginResponseDto) session.getAttribute("loginUser");
+        if(loginUser == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if(!loginUser.getId().equals(userId)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         userService.deleteOne(userId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
