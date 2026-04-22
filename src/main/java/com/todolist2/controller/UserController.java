@@ -26,6 +26,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<Void> login(
+            @Valid
             @RequestBody LoginRequestDto request,
             HttpSession session
     ){
@@ -55,6 +56,7 @@ public class UserController {
 
     @PatchMapping("/{userId}")
     public ResponseEntity<UpdateUserResponseDto> update(
+            @Valid
             @RequestBody UpdateUserRequestDto request,
             @PathVariable Long userId,
             HttpSession session

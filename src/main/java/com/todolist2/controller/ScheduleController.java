@@ -6,6 +6,7 @@ import com.todolist2.dto.userDto.LoginResponseDto;
 import com.todolist2.entity.Schedule;
 import com.todolist2.service.ScheduleService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ public class ScheduleController {
 
     @PostMapping
     public ResponseEntity<CreateScheduleResponseDto> create(
+            @Valid
             @RequestBody CreateScheduleRequestDto request,
             HttpSession session
             ){
@@ -45,6 +47,7 @@ public class ScheduleController {
 
     @PatchMapping("/{scheduleId}")
     public ResponseEntity<UpdateScheduleResponseDto> update(
+            @Valid
             @RequestBody UpdateScheduleRequestDto request,
             @PathVariable Long scheduleId,
             HttpSession session

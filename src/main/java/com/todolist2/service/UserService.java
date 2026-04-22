@@ -2,6 +2,8 @@ package com.todolist2.service;
 
 import com.todolist2.dto.userDto.*;
 import com.todolist2.entity.User;
+import com.todolist2.exception.NotFoundException;
+import com.todolist2.exception.UnauthorizedException;
 import com.todolist2.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,7 +42,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public GetUserResponseDto findOne(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+                () -> new NotFoundException("유저가 존재하지 않습니다.")
         );
 
         return GetUserResponseDto.from(user);
@@ -49,7 +51,7 @@ public class UserService {
     @Transactional
     public UpdateUserResponseDto updateOne(UpdateUserRequestDto request, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+                () -> new NotFoundException("유저가 존재하지 않습니다.")
         );
         user.update(
                 request.getUserName(),
@@ -61,7 +63,7 @@ public class UserService {
     @Transactional
     public void deleteOne(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+                () -> new NotFoundException("유저가 존재하지 않습니다.")
         );
 
         userRepository.delete(user);
@@ -70,10 +72,10 @@ public class UserService {
     @Transactional
     public LoginResponseDto login(LoginRequestDto request) {
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow(
-                () -> new IllegalArgumentException("이메일 또는 비밀번호가 일치하지 않습니다.")
+                () -> new UnauthorizedException("이메일 또는 비밀번호가 일치하지 않습니다.")
         );
         if(!user.getPassword().equals(request.getPassword())){
-            throw new IllegalArgumentException("이메일 또는 비밀번호가 일치하지 않습니다.");
+            throw new UnauthorizedException("이메일 또는 비밀번호가 일치하지 않습니다.");
         }
         return LoginResponseDto.from(user);
     }
