@@ -1,7 +1,7 @@
 package com.todolist2.controller;
 
 
-import com.todolist2.dto.*;
+import com.todolist2.dto.scheduleDto.*;
 import com.todolist2.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,8 +22,8 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GetOneScheduleResponseDto>> getAll(@RequestParam (required = false) String author){
-        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findAll(author));
+    public ResponseEntity<List<GetOneScheduleResponseDto>> getAll(@RequestParam (required = false) String userName){
+        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findAll(userName));
     }
 
     @GetMapping("/{scheduleId}")

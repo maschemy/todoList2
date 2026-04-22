@@ -16,16 +16,17 @@ public class Schedule extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String author;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(nullable = false)
     private String title;
 
     private String contents;
 
-    public Schedule(String author, String title, String contents) {
-        this.author = author;
+    public Schedule(User user, String title, String contents) {
+        this.user = user;
         this.title = title;
         this.contents = contents;
     }

@@ -1,4 +1,4 @@
-package com.todolist2.dto;
+package com.todolist2.dto.scheduleDto;
 
 
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class CreateScheduleRequestDto {
 
-    private String author;
+    private Long userId;
     private String title;
     private String contents;
 }
