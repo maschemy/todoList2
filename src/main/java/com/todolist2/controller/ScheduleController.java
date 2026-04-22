@@ -2,6 +2,8 @@ package com.todolist2.controller;
 
 
 import com.todolist2.dto.scheduleDto.*;
+import com.todolist2.dto.userDto.LoginResponseDto;
+import com.todolist2.entity.Schedule;
 import com.todolist2.service.ScheduleService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +24,12 @@ public class ScheduleController {
             @RequestBody CreateScheduleRequestDto request,
             HttpSession session
             ){
-        return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.save(request));
+        LoginResponseDto loginUser = (LoginResponseDto) session.getAttribute("loginUser");
+        if(loginUser == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.save(request, loginUser.getEmail()));
     }
 
 
@@ -39,15 +46,28 @@ public class ScheduleController {
     @PatchMapping("/{scheduleId}")
     public ResponseEntity<UpdateScheduleResponseDto> update(
             @RequestBody UpdateScheduleRequestDto request,
-            @PathVariable Long scheduleId
+            @PathVariable Long scheduleId,
+            HttpSession session
             ){
-        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.updateOne(request, scheduleId));
+        LoginResponseDto loginUser = (LoginResponseDto) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.updateOne(request, scheduleId,loginUser.getEmail()));
     }
 
     @DeleteMapping("{scheduleId}")
     public ResponseEntity<Void> delete(
-            @PathVariable Long scheduleId){
-        scheduleService.deleteOne(scheduleId);
+            @PathVariable Long scheduleId,
+            HttpSession session
+            ){
+        LoginResponseDto loginUser = (LoginResponseDto) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        scheduleService.deleteOne(scheduleId, loginUser.getEmail());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
