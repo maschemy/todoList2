@@ -1,7 +1,11 @@
 package com.todolist2.controller;
 
 import com.todolist2.dto.userDto.*;
+import com.todolist2.entity.User;
 import com.todolist2.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +19,28 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping
-    public ResponseEntity<CreateUserResponseDto> create(@RequestBody CreateUserRequestDto request){
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(request));
+    @PostMapping("/signup")
+    public ResponseEntity<CreateUserResponseDto> create(@Valid @RequestBody CreateUserRequestDto request){
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(request));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Void> login(
+            @RequestBody LoginRequestDto request,
+            HttpSession session
+    ){
+        LoginResponseDto loginUser = userService.login(request);
+        session.setAttribute("loginUser", loginUser);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpSession session) {
+        if (session != null) {
+            session.invalidate();
+        }
+        return ResponseEntity.ok("로그아웃 성공");
     }
 
     @GetMapping

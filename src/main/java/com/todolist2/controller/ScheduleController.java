@@ -3,6 +3,7 @@ package com.todolist2.controller;
 
 import com.todolist2.dto.scheduleDto.*;
 import com.todolist2.service.ScheduleService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +18,13 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping
-    public ResponseEntity<CreateScheduleResponseDto> create(@RequestBody CreateScheduleRequestDto request){
+    public ResponseEntity<CreateScheduleResponseDto> create(
+            @RequestBody CreateScheduleRequestDto request,
+            HttpSession session
+            ){
         return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.save(request));
     }
+
 
     @GetMapping
     public ResponseEntity<List<GetOneScheduleResponseDto>> getAll(@RequestParam (required = false) String userName){
