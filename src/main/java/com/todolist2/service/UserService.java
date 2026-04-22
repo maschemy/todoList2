@@ -4,7 +4,6 @@ import com.todolist2.dto.userDto.*;
 import com.todolist2.entity.User;
 import com.todolist2.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +15,11 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public CreateUserResponseDto createUser(CreateUserRequestDto request) {
+    public CreateUserResponseDto save(CreateUserRequestDto request) {
         User user = new User(
                 request.getUserName(),
-                request.getEmail()
+                request.getEmail(),
+                request.getPassword()
         );
 
         User savedUser = userRepository.save(user);
@@ -27,7 +27,7 @@ public class UserService {
         return CreateUserResponseDto.from(savedUser);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<GetUserResponseDto> findAll() {
         List<User> user;
 
@@ -37,7 +37,7 @@ public class UserService {
                 .toList();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public GetUserResponseDto findOne(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
@@ -65,5 +65,16 @@ public class UserService {
         );
 
         userRepository.delete(user);
+    }
+
+    @Transactional
+    public LoginResponseDto login(LoginRequestDto request) {
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(
+                () -> new IllegalArgumentException("이메일 또는 비밀번호가 일치하지 않습니다.")
+        );
+        if(!user.getPassword().equals(request.getPassword())){
+            throw new IllegalArgumentException("이메일 또는 비밀번호가 일치하지 않습니다.");
+        }
+        return LoginResponseDto.from(user);
     }
 }

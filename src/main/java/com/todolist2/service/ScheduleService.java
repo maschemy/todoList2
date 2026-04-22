@@ -18,8 +18,8 @@ public class ScheduleService {
     private final UserRepository userRepository;
 
     @Transactional
-    public CreateScheduleResponseDto save(CreateScheduleRequestDto request) {
-        User user = userRepository.findById(request.getUserId()).orElseThrow(
+    public CreateScheduleResponseDto save(CreateScheduleRequestDto request, String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다.")
         );
         Schedule schedule = new Schedule(
@@ -61,10 +61,14 @@ public class ScheduleService {
     }
 
     @Transactional
-    public UpdateScheduleResponseDto updateOne(UpdateScheduleRequestDto request, Long scheduleId) {
+    public UpdateScheduleResponseDto updateOne(UpdateScheduleRequestDto request, Long scheduleId, String email) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new IllegalArgumentException("일정이 존재하지 않습니다.")
         );
+        if(!schedule.getUser().getEmail().equals((email))){
+            throw new IllegalArgumentException("본인이 작성한 일정만 수정할 수 있습니다.");
+        }
+
         schedule.update(
                 request.getTitle(),
                 request.getContents()
@@ -74,11 +78,14 @@ public class ScheduleService {
     }
 
     @Transactional
-    public void deleteOne(Long scheduleId) {
+    public void deleteOne(Long scheduleId, String email) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new IllegalStateException("일정이 존재하지 않습니다.")
         );
 
+        if(!schedule.getUser().getEmail().equals(email)){
+            throw new IllegalArgumentException("본인이 작성한 일정만 삭제할 수 있습니다.");
+        }
         scheduleRepository.delete(schedule);
     }
 

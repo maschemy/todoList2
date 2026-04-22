@@ -2,7 +2,10 @@ package com.todolist2.controller;
 
 
 import com.todolist2.dto.scheduleDto.*;
+import com.todolist2.dto.userDto.LoginResponseDto;
+import com.todolist2.entity.Schedule;
 import com.todolist2.service.ScheduleService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +20,18 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping
-    public ResponseEntity<CreateScheduleResponseDto> create(@RequestBody CreateScheduleRequestDto request){
-        return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.save(request));
+    public ResponseEntity<CreateScheduleResponseDto> create(
+            @RequestBody CreateScheduleRequestDto request,
+            HttpSession session
+            ){
+        LoginResponseDto loginUser = (LoginResponseDto) session.getAttribute("loginUser");
+        if(loginUser == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.save(request, loginUser.getEmail()));
     }
+
 
     @GetMapping
     public ResponseEntity<List<GetOneScheduleResponseDto>> getAll(@RequestParam (required = false) String userName){
@@ -34,15 +46,28 @@ public class ScheduleController {
     @PatchMapping("/{scheduleId}")
     public ResponseEntity<UpdateScheduleResponseDto> update(
             @RequestBody UpdateScheduleRequestDto request,
-            @PathVariable Long scheduleId
+            @PathVariable Long scheduleId,
+            HttpSession session
             ){
-        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.updateOne(request, scheduleId));
+        LoginResponseDto loginUser = (LoginResponseDto) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.updateOne(request, scheduleId,loginUser.getEmail()));
     }
 
     @DeleteMapping("{scheduleId}")
     public ResponseEntity<Void> delete(
-            @PathVariable Long scheduleId){
-        scheduleService.deleteOne(scheduleId);
+            @PathVariable Long scheduleId,
+            HttpSession session
+            ){
+        LoginResponseDto loginUser = (LoginResponseDto) session.getAttribute("loginUser");
+        if (loginUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        scheduleService.deleteOne(scheduleId, loginUser.getEmail());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
