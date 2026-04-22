@@ -79,7 +79,7 @@ public class ScheduleService {
                 () -> new IllegalStateException("일정이 존재하지 않습니다.")
         );
 
-        scheduleRepository.deleteById(scheduleId);
+        scheduleRepository.delete(schedule);
     }
 
 
