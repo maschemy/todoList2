@@ -1,5 +1,6 @@
 package com.todolist2.service;
 
+import com.todolist2.config.PasswordEncoder;
 import com.todolist2.dto.userDto.*;
 import com.todolist2.entity.User;
 import com.todolist2.exception.NotFoundException;
@@ -15,13 +16,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public CreateUserResponseDto save(CreateUserRequestDto request) {
         User user = new User(
                 request.getUserName(),
                 request.getEmail(),
-                request.getPassword()
+                passwordEncoder.encode(request.getPassword())
         );
 
         User savedUser = userRepository.save(user);
@@ -74,7 +76,7 @@ public class UserService {
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow(
                 () -> new UnauthorizedException("이메일 또는 비밀번호가 일치하지 않습니다.")
         );
-        if(!user.getPassword().equals(request.getPassword())){
+        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())){
             throw new UnauthorizedException("이메일 또는 비밀번호가 일치하지 않습니다.");
         }
         return LoginResponseDto.from(user);
