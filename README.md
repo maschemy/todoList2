@@ -251,7 +251,7 @@ src/main/java/com/todolist2
 </details>
 
 <details>
-<summary>유저 삭제 </summary>
+<summary>유저 삭제 🔒</summary>
 
 ---
 
@@ -397,7 +397,7 @@ src/main/java/com/todolist2
 </details>
 
 <details>
-<summary>일정 수정 </summary>
+<summary>일정 수정 🔒</summary>
 
 ---
 
@@ -447,7 +447,7 @@ src/main/java/com/todolist2
 ### 💬 Comment API
 
 <details>
-<summary>댓글 생성 </summary>
+<summary>댓글 생성 🔒</summary>
 
 ---
 
@@ -502,7 +502,7 @@ src/main/java/com/todolist2
 </details>
 
 <details>
-<summary>댓글 삭제 </summary>
+<summary>댓글 삭제 🔒</summary>
 
 ---
 
