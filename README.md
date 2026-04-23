@@ -230,7 +230,7 @@ src/main/java/com/todolist2
 **Request Body** (변경할 필드만 전송 가능)
 ```json
 {
-  "userName": "김철수",
+  "userName": "김지수",
   "email": "kim@email.com"
 }
 ```
@@ -239,7 +239,7 @@ src/main/java/com/todolist2
 ```json
 {
   "id": 1,
-  "userName": "김철수",
+  "userName": "김지수",
   "email": "kim@email.com",
   "createdAt": "2024-01-01T00:00:00",
   "modifiedAt": "2024-01-02T00:00:00"
