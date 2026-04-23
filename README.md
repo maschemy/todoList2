@@ -537,3 +537,40 @@ src/main/java/com/todolist2
 | password | 8글자 이상, 공백 불가 |
 | title | 1글자 이상 10글자 이하, 공백 불가 |
 | contents | 200글자 이내 |
+
+🔧 트러블슈팅
+
+@Valid 어노테이션 없이 Validation이 동작하지 않는 문제
+- - -
+문제
+@Transactional(readOnly = true) 사용 시 컴파일 에러가 발생했다.
+         
+원인
+jakarta.transaction.Transactional은 readOnly 속성을 지원하지 않는다.
+
+해결
+Spring의 @Transactional로 import를 변경했.
+
+``` java
+// 수정 전
+import jakarta.transaction.Transactional;
+
+// 수정 후
+import org.springframework.transaction.annotation.Transactional;
+```
+- - -
+문제
+request.getcommentContents() 호출 시 메서드를 찾을 수 없다는 에러가 발생했다.
+
+원인
+Lombok @Getter는 필드명의 첫 글자를 대문자로 변환하여 getter를 생성한다는걸 잊었다.
+commentContents → getCommentContents() (C가 대문자)
+
+```java
+// 수정 전
+request.getcommentContents()
+
+// 수정 후
+request.getCommentContents()
+```
+
