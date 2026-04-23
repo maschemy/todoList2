@@ -39,13 +39,7 @@ public class ScheduleService {
                 request.getContents()
         );
         Schedule savedSchedule = scheduleRepository.save(schedule);
-        return new CreateScheduleResponseDto(
-                savedSchedule.getUser().getUserName(),
-                savedSchedule.getTitle(),
-                savedSchedule.getContents(),
-                savedSchedule.getCreatedAt(),
-                savedSchedule.getModifiedAt()
-        );
+        return CreateScheduleResponseDto.from(savedSchedule);
     }
 
     /**
