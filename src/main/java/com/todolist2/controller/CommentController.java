@@ -13,12 +13,22 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 댓글 controller
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/schedules/{scheduleId}/comments")
 public class CommentController {
     private final CommentService commentService;
 
+    /**
+     * 댓글 생성 기능(로그인 된 계정이 있어야 댓글 작성 가능)
+     * @param scheduleId
+     * @param request
+     * @param session
+     * @return
+     */
     @PostMapping
     public ResponseEntity<CreateCommentResponseDto> create(
             @PathVariable Long scheduleId,
@@ -33,11 +43,23 @@ public class CommentController {
                 .body(commentService.save(scheduleId, request, loginUser.getEmail()));
     }
 
+    /**
+     * 댓글 조회 기능(해당 일정에 있는 댓글 전체 조회)
+     * @param scheduleId
+     * @return
+     */
     @GetMapping
     public ResponseEntity<List<GetCommentResponseDto>> getAll(@PathVariable Long scheduleId) {
         return ResponseEntity.status(HttpStatus.OK).body(commentService.findAll(scheduleId));
     }
 
+    /**
+     * 댓글 삭제 controller
+     * @param scheduleId
+     * @param commentId
+     * @param session
+     * @return
+     */
     @DeleteMapping("/delete/{commentId}")
     public ResponseEntity<Void> delete(
             @PathVariable Long scheduleId,

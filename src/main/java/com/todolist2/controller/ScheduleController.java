@@ -14,12 +14,21 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * 일정 관리 Controller
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/schedules")
 public class ScheduleController {
     private final ScheduleService scheduleService;
 
+    /**
+     * 일정 생성 기능, 로그인 되어있는지 확인
+     * @param request
+     * @param session
+     * @return
+     */
     @PostMapping
     public ResponseEntity<CreateScheduleResponseDto> create(
             @Valid
@@ -35,16 +44,33 @@ public class ScheduleController {
     }
 
 
+    /**
+     * 일정 전체 조회
+     * @param userName
+     * @return
+     */
     @GetMapping
     public ResponseEntity<List<GetOneScheduleResponseDto>> getAll(@RequestParam (required = false) String userName){
         return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findAll(userName));
     }
 
+    /**
+     * 일정 단건 조회,scheduleId로 조회
+     * @param scheduleId
+     * @return
+     */
     @GetMapping("/{scheduleId}")
     public ResponseEntity<GetOneScheduleResponseDto> getOne(@PathVariable Long scheduleId){
         return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findOne(scheduleId));
     }
 
+    /**
+     * 일정 수정 기능, 로그인 되어있는지 체크 후 service로 넘김
+     * @param request
+     * @param scheduleId
+     * @param session
+     * @return
+     */
     @PatchMapping("/{scheduleId}")
     public ResponseEntity<UpdateScheduleResponseDto> update(
             @Valid
@@ -60,6 +86,12 @@ public class ScheduleController {
         return ResponseEntity.status(HttpStatus.OK).body(scheduleService.updateOne(request, scheduleId,loginUser.getEmail()));
     }
 
+    /**
+     * 일정 삭제 기능
+     * @param scheduleId
+     * @param session
+     * @return
+     */
     @DeleteMapping("{scheduleId}")
     public ResponseEntity<Void> delete(
             @PathVariable Long scheduleId,

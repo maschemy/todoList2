@@ -17,6 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+
+/**
+ * 댓글 관리 Service
+ */
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -24,6 +28,13 @@ public class CommentService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
 
+    /**
+     * 댓글 생성 기능, 로그인을 했는지, 일정이 존재하는지 체크
+     * @param scheduleId
+     * @param request
+     * @param email
+     * @return
+     */
     @Transactional
     public CreateCommentResponseDto save(Long scheduleId, CreateCommentRequestDto request, String email) {
         User user = userRepository.findByEmail(email).orElseThrow(
@@ -38,6 +49,11 @@ public class CommentService {
         return CreateCommentResponseDto.from(savedComment);
     }
 
+    /**
+     * 해당 일정에 해당하는 댓글 전체조회
+     * @param scheduleId
+     * @return
+     */
     @Transactional(readOnly = true)
     public List<GetCommentResponseDto> findAll(Long scheduleId) {
         return commentRepository.findAllBySchedule_Id(scheduleId)
@@ -46,6 +62,11 @@ public class CommentService {
                 .toList();
     }
 
+    /**
+     * 본인이 작성한 댓글만 삭제 가능(email 비교), 댓글이 존재하는지 체크
+     * @param commentId
+     * @param email
+     */
     @Transactional
     public void deleteOne(Long commentId, String email) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
